@@ -11,6 +11,8 @@ class Plan(models.Model):
     teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE)
     period = models.ForeignKey(Period, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, default='draft') 
+
+    observation = models.TextField(blank=True, null=True, help_text="Observaciones del jefe de departamento")
     
     class Meta:
         unique_together = ('teacher', 'period') 

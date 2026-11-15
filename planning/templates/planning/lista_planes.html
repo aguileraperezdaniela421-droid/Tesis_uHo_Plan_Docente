@@ -27,7 +27,12 @@
                         </td>
                         <td class="px-4">{{ plan.period.name }}</td>
                         <td class="px-4">
-                            <span class="badge bg-warning text-dark px-3 py-2">Borrador</span>
+                            {% if plan.status == 'draft' %}
+        <span class="badge bg-warning text-dark px-3 py-2">Borrador</span>
+    {% elif plan.status == 'approved' %}
+        <span class="badge bg-success px-3 py-2">Aprobado</span>
+    {% endif %}
+</td>
                         </td>
                     </tr>
                     {% empty %}

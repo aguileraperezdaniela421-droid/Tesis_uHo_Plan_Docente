@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="mb-4">
-        <a href="{% url 'lista_planes' %}" class="text-decoration-none">← Volver a la lista</a>
-        <h2 class="mt-2 fw-bold" style="color: #222e58;">
-            Plan de {{ plan.teacher.user.username }} - {{ plan.period.name }}
-        </h2>
+    <!-- 1. Encabezado con el botón de volver y el estado del plan -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{% url 'lista_planes' %}" class="text-decoration-none">← Volver a la lista</a>
+            <h2 class="mt-2 fw-bold" style="color: #222e58;">
+                Plan de {{ plan.teacher.user.username }} - {{ plan.period.name }}
+            </h2>
+        </div>
+        
+        <!-- Aquí solo mostramos el estado, SIN el botón de aprobar -->
+        <div>
+            {% if plan.status == 'approved' %}
+                <span class="badge bg-success fs-6 px-3 py-2">Plan Aprobado</span>
+            {% else %}
+                <span class="badge bg-warning text-dark fs-6 px-3 py-2">Pendiente de Aprobación</span>
+            {% endif %}
+        </div>
     </div>
 
+    <!-- 2. La tarjeta de actividades -->
     <div class="card shadow-sm border-0">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Actividades Planificadas</h5>
@@ -16,7 +29,6 @@
         
         <div class="card-body">
             <ul class="list-group list-group-flush">
-                
                 {% for actividad in actividades %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ actividad.name }}
@@ -26,8 +38,7 @@
                     <li class="list-group-item text-muted text-center py-4">
                         Este plan aún no tiene actividades registradas.
                     </li>
-                {% endfor %} <!-- ¡ESTA ES LA LÍNEA QUE FALTABA! -->
-
+                {% endfor %}
             </ul>
         </div>
     </div>

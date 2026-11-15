@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from users.models import TeacherProfile
 from .models import Plan
 from .forms import PlanForm
 from .forms import ActivityForm 
@@ -40,3 +42,30 @@ def crear_actividad(request, plan_id):
         form = ActivityForm()
 
     return render(request, 'planning/crear_actividad.html', {'form': form, 'plan': plan})
+
+def aprobar_plan(request, plan_id):
+    plan = get_object_or_404(Plan, id=plan_id)
+   
+    plan.status = 'approved'
+    plan.save()
+    
+    return redirect('detalle_plan', plan_id=plan.id)
+
+@login_required 
+def bandeja_jefe(request):
+    
+    try:
+        perfil = request.user.teacherprofile
+        if perfil.role != 'head' and not request.user.is_superuser:
+            
+            return redirect('lista_planes') 
+    except TeacherProfile.DoesNotExist:
+        
+        return redirect('lista_planes')
+
+
+    planes_pendientes = Plan.objects.exclude(status='approved')
+    return render(request, 'planning/bandeja_jefe.html', {'planes': planes_pendientes})
+
+
+
