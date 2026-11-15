@@ -1,8 +1,14 @@
+from .models import Plan, Activity # Asegúrate de importar Activity también
 from django import forms
-from .models import Plan
 
 class PlanForm(forms.ModelForm):
     class Meta:
         model = Plan
-        fields = ['teacher', 'period'] 
+        fields = ['teacher', 'period']
+
+
+class ActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['name', 'planned_hours']
         

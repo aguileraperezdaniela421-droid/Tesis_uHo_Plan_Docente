@@ -2,30 +2,32 @@
 
 {% block content %}
     <div class="mb-4">
-        
-        <a href="{% url 'lista_planes' %}">← Volver a la lista</a>
-        
-        
-        <h2>Plan de {{ plan.teacher.user.username }} - {{ plan.period.name }}</h2>
+        <a href="{% url 'lista_planes' %}" class="text-decoration-none">← Volver a la lista</a>
+        <h2 class="mt-2 fw-bold" style="color: #222e58;">
+            Plan de {{ plan.teacher.user.username }} - {{ plan.period.name }}
+        </h2>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h5>Actividades Planificadas</h5>
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Actividades Planificadas</h5>
+            <a href="{% url 'crear_actividad' plan.id %}" class="btn btn-uho btn-sm">+ Agregar Actividad</a>
         </div>
+        
         <div class="card-body">
-            <ul>
+            <ul class="list-group list-group-flush">
                 
                 {% for actividad in actividades %}
-                    <li>
-                        {{ actividad.name }} 
-                        <span>{{ actividad.planned_hours }} horas</span>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ actividad.name }}
+                        <span class="badge bg-primary rounded-pill">{{ actividad.planned_hours }} horas</span>
                     </li>
-                
-                
                 {% empty %}
-                    <li>Este plan aún no tiene actividades registradas.</li>
-                {% endfor %}
+                    <li class="list-group-item text-muted text-center py-4">
+                        Este plan aún no tiene actividades registradas.
+                    </li>
+                {% endfor %} <!-- ¡ESTA ES LA LÍNEA QUE FALTABA! -->
+
             </ul>
         </div>
     </div>
