@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header text-white" style="background-color: #222e58;">
+                    <h4 class="mb-0">➕ Crear Nuevo Plan Anual</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Aquí Django dibuja los desplegables de Docente y Período -->
+                        {{ form.as_p }}
+                        
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a href="{% url 'lista_planes' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-uho">Guardar Plan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
