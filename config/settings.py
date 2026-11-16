@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'institutional',
     'planning',
     'users',
+    'agenda',
     ]
 
 MIDDLEWARE = [
@@ -132,7 +133,7 @@ MAILERS = {
 import os
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = '/' 
+LOGIN_REDIRECT_URL = 'redireccion_login'
 LOGOUT_REDIRECT_URL = '/login/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),

@@ -1,29 +1,27 @@
-"""
-URL configuration for config project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-
 from django.contrib import admin
 from django.urls import path, include
-from . import views # <--- Importante para que encuentre el inicio
 from django.contrib.auth import views as auth_views
+
+# 1. Importamos la vista home de config
+from . import views 
+
+# 2. Importamos la redirección directamente desde la app users
+from users.views import redireccion_login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'), # <--- La página de inicio
-    path('planes/', include('planning.urls')),
+    
+    # Ruta de inicio
+    path('', views.home, name='home'),
+    
+    # Rutas de Autenticación
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    
+    # Ruta de redirección (usando la importación directa)
+    path('redireccion-login/', redireccion_login, name='redireccion_login'),
+    
+    # Apps
+    path('planes/', include('planning.urls')),
+    path('usuarios/', include('users.urls')),
 ]
