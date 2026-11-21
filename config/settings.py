@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'planning',
     'users',
     'agenda',
+    'core',
     ]
 
 MIDDLEWARE = [

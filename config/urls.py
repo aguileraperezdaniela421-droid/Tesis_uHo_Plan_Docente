@@ -24,4 +24,6 @@ urlpatterns = [
     # Apps
     path('planes/', include('planning.urls')),
     path('usuarios/', include('users.urls')),
+
+    path('agenda/', include('agenda.urls')),
 ]
