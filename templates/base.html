@@ -52,6 +52,13 @@
                         <!-- Opción para el PROFESOR y JEFE (Ver planes) -->
                         <a class="nav-link text-white" href="/planes/">Planes Anuales</a>
 
+                        {% if user.is_authenticated %}
+                        <a class="nav-link text-white" href="/planes/">Planes Anuales</a>
+    
+                        <!-- NUEVO ENLACE A LA AGENDA -->
+                        <a class="nav-link text-white" href="{% url 'mi_agenda' %}">Mi Agenda</a>
+                        {% endif %}
+                        
                         <!-- Opción SOLO para el JEFE (o Superadmin) -->
                         {% if user.is_superuser or user.teacherprofile.role == 'head' %}
                             <a class="nav-link text-white" href="/planes/bandeja/">Bandeja del Jefe</a>
