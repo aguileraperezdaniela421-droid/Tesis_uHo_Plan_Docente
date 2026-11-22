@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <!-- Encabezado con título y botón alineados -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0" style="color: #222e58;">📋 Planes Anuales de Docentes</h2>
-        <a href="{% url 'crear_plan' %}" class="btn btn-uho px-4 py-2">+ Nuevo Plan</a>
+        
+        <!-- TÍTULO DINÁMICO: Cambia si es la vista del Jefe o la del Profesor -->
+        {% if es_mi_plan %}
+            <h2 class="fw-bold" style="color: #222e58;">📋 Mi Plan Anual de Trabajo</h2>
+        {% else %}
+            <h2 class="fw-bold" style="color: #222e58;">📋 Planes Anuales de Docentes</h2>
+        {% endif %}
+        
+        <!-- BOTÓN NUEVO PLAN: Solo se muestra si no es el "mi plan" del jefe, 
+             o si es el jefe pero aún no tiene ningún plan creado -->
+        {% if not es_mi_plan or planes|length == 0 %}
+            <a href="{% url 'crear_plan' %}" class="btn btn-uho">+ Nuevo Plan</a>
+        {% endif %}
     </div>
     
     <div class="card shadow-sm border-0">
@@ -27,18 +37,28 @@
                         </td>
                         <td class="px-4">{{ plan.period.name }}</td>
                         <td class="px-4">
+                            <!-- Lógica dinámica del estado -->
                             {% if plan.status == 'draft' %}
-        <span class="badge bg-warning text-dark px-3 py-2">Borrador</span>
-    {% elif plan.status == 'approved' %}
-        <span class="badge bg-success px-3 py-2">Aprobado</span>
-    {% endif %}
-</td>
+                                <span class="badge bg-secondary px-3 py-2">Borrador</span>
+                            {% elif plan.status == 'pending' %}
+                                <span class="badge bg-info text-dark px-3 py-2">Pendiente</span>
+                            {% elif plan.status == 'approved' %}
+                                <span class="badge bg-success px-3 py-2">Aprobado</span>
+                            {% elif plan.status == 'rejected' %}
+                                <span class="badge bg-danger px-3 py-2">Rechazado</span>
+                            {% else %}
+                                <span class="badge bg-dark px-3 py-2">{{ plan.status }}</span>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
                         <td colspan="3" class="text-center text-muted py-5">
-                            No hay planes registrados aún. ¡Haz clic en "+ Nuevo Plan"!
+                            {% if es_mi_plan %}
+                                Aún no has creado tu Plan Anual. ¡Haz clic en "+ Nuevo Plan"!
+                            {% else %}
+                                No hay planes registrados aún. ¡Haz clic en "+ Nuevo Plan"!
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

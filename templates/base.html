@@ -11,24 +11,10 @@
     
     <!-- Estilos con los colores oficiales de la UHo -->
     <style>
-        /* El Azul Marino oficial del logo */
         .bg-uho { background-color: #222e58 !important; } 
-        
-        /* El Verde Lima oficial del logo para los botones */
-        .btn-uho { 
-            background-color: #93ba21; 
-            color: white; 
-            font-weight: bold;
-        }
-        .btn-uho:hover { 
-            background-color: #7ea31a; 
-            color: white; 
-        }
-        
-        .navbar-brand img { 
-            height: 45px; 
-            margin-right: 15px; 
-        }
+        .btn-uho { background-color: #93ba21; color: white; font-weight: bold; }
+        .btn-uho:hover { background-color: #7ea31a; color: white; }
+        .navbar-brand img { height: 45px; margin-right: 15px; }
     </style>
 </head>
 <body class="bg-light">
@@ -40,7 +26,6 @@
                 <img src="{% static 'img/logo-uho.png' %}" alt="Logo UHo">
             </a>
             
-            <!-- Botón para móviles (Hamburguesa) -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -49,27 +34,29 @@
                 <div class="navbar-nav ms-auto align-items-center">
                     
                     {% if user.is_authenticated %}
-                        <!-- Opción para el PROFESOR y JEFE (Ver planes) -->
-                        <a class="nav-link text-white" href="/planes/">Planes Anuales</a>
-
-                        {% if user.is_authenticated %}
-                        <a class="nav-link text-white" href="/planes/">Planes Anuales</a>
-    
-                        <!-- NUEVO ENLACE A LA AGENDA -->
-                        <a class="nav-link text-white" href="{% url 'mi_agenda' %}">Mi Agenda</a>
-                        {% endif %}
                         
-                        <!-- Opción SOLO para el JEFE (o Superadmin) -->
-                        {% if user.is_superuser or user.teacherprofile.role == 'head' %}
-                            <a class="nav-link text-white" href="/planes/bandeja/">Bandeja del Jefe</a>
-                        {% endif %}
-
-                        <!-- Opción SOLO para el ADMIN (o Superadmin) -->
-                        {% if user.is_superuser or user.is_staff %}
+                        <!-- MENÚ DINÁMICO SEGÚN EL ROL -->
+                        {% if user.is_superuser %}
+                            <!-- Superadmin -->
+                            <a class="nav-link text-white" href="{% url 'mi_plan' %}">Mi Plan</a>
+                            <a class="nav-link text-white" href="{% url 'bandeja_jefe' %}">Bandeja Global</a>
                             <a class="nav-link text-white" href="/admin/">Panel Admin</a>
+                            
+                        {% elif user.teacherprofile.role == 'head' %}
+                            <!-- Jefe de Departamento -->
+                            <a class="nav-link text-white" href="{% url 'mi_plan' %}">Mi Plan</a>
+                            <a class="nav-link text-white" href="{% url 'planes_departamento' %}">Planes del Depto</a>
+                            <a class="nav-link text-white" href="{% url 'bandeja_jefe' %}">Bandeja de Aprobación</a>
+                            
+                        {% else %}
+                            <!-- Profesor -->
+                            <a class="nav-link text-white" href="{% url 'mi_plan' %}">Mi Plan</a>
                         {% endif %}
 
-                        <!-- Mi Perfil (para docentes, no para admins puros) -->
+                        <!-- Mi Agenda (Para todos los docentes) -->
+                        <a class="nav-link text-white" href="{% url 'mi_agenda' %}">Mi Agenda</a>
+
+                        <!-- Mi Perfil (Para docentes) -->
                         {% if not user.is_staff %}
                             <a class="nav-link text-white" href="{% url 'mi_perfil' %}">Mi Perfil</a>
                         {% endif %}
@@ -77,7 +64,7 @@
                         <!-- Separador y Datos del Usuario -->
                         <span class="nav-link text-white-50">| Hola, {{ user.username }}</span>
                         
-                        <!-- FORMULARIO POST PARA CERRAR SESIÓN (Seguro) -->
+                        <!-- FORMULARIO POST PARA CERRAR SESIÓN -->
                         <form method="POST" action="{% url 'logout' %}" class="d-inline m-0">
                             {% csrf_token %}
                             <button type="submit" class="nav-link text-white bg-transparent border-0" style="cursor: pointer;">

@@ -1,30 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <!-- 1. Encabezado con el botón de volver y el estado del plan -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <a href="{% url 'lista_planes' %}" class="text-decoration-none">← Volver a la lista</a>
+            <div>
+            <!-- Si el usuario es jefe, vuelve a la lista de su depto. Si es profe, vuelve a su plan -->
+            {% if user.teacherprofile.role == 'head' %}
+                <a href="{% url 'planes_departamento' %}" class="text-decoration-none">← Volver a la lista del departamento</a>
+            {% else %}
+                <a href="{% url 'mi_plan' %}" class="text-decoration-none">← Volver a mi plan</a>
+            {% endif %}
+            
             <h2 class="mt-2 fw-bold" style="color: #222e58;">
                 Plan de {{ plan.teacher.user.username }} - {{ plan.period.name }}
             </h2>
         </div>
-        
-        <!-- Aquí solo mostramos el estado, SIN el botón de aprobar -->
         <div>
-            {% if plan.status == 'approved' %}
+            {% if plan.status == 'draft' %}
+                <span class="badge bg-secondary fs-6 px-3 py-2 me-2">Borrador</span>
+                <a href="{% url 'enviar_plan' plan.id %}" class="btn btn-warning fw-bold shadow-sm">
+                    📤 Enviar a Revisión
+                </a>
+            {% elif plan.status == 'pending' %}
+                <span class="badge bg-info text-dark fs-6 px-3 py-2">Pendiente de Aprobación</span>
+            {% elif plan.status == 'approved' %}
                 <span class="badge bg-success fs-6 px-3 py-2">Plan Aprobado</span>
-            {% else %}
-                <span class="badge bg-warning text-dark fs-6 px-3 py-2">Pendiente de Aprobación</span>
             {% endif %}
         </div>
     </div>
 
-    <!-- 2. La tarjeta de actividades -->
+    <!-- TARJETA DE ACTIVIDADES -->
     <div class="card shadow-sm border-0">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Actividades Planificadas</h5>
-            <a href="{% url 'crear_actividad' plan.id %}" class="btn btn-uho btn-sm">+ Agregar Actividad</a>
+            
+            <!-- Solo mostramos el botón si el plan es un borrador -->
+            {% if plan.status == 'draft' %}
+                <a href="{% url 'crear_actividad' plan.id %}" class="btn btn-uho btn-sm">+ Agregar Actividad</a>
+            {% endif %}
         </div>
         
         <div class="card-body">

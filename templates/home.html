@@ -6,25 +6,75 @@
         <p class="lead mt-3">Sistema para la Elaboración, Aprobación, Seguimiento y Evaluación de los Planes Individuales de Trabajo Docente.</p>
         <hr class="my-4">
         
+        <!-- LÓGICA DE TARJETAS SEGÚN EL ROL -->
         <div class="row mt-5 justify-content-center">
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h5 class="card-title">📋 Planes Anuales</h5>
-                        <p class="card-text text-muted">Gestiona y revisa los planes de los docentes.</p>
-                        <a href="/planes/" class="btn btn-uho">Ir a Planes</a>
+            
+            {% if user.is_authenticated %}
+                {% if user.is_superuser %}
+                    <!-- Tarjetas del Superadmin -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">⚙️ Administración</h5>
+                                <p class="card-text text-muted">Configura campus, departamentos y usuarios.</p>
+                                <a href="/admin/" class="btn btn-outline-dark">Ir al Admin</a>
+                            </div>
+                        </div>
+                    </div>
+                {% elif user.teacherprofile.role == 'head' %}
+                    <!-- Tarjetas del Jefe -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">📋 Mi Plan Anual</h5>
+                                <p class="card-text text-muted">Gestiona tu propio plan de trabajo.</p>
+                                <a href="{% url 'mi_plan' %}" class="btn btn-uho">Ver Mi Plan</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">👥 Planes del Depto</h5>
+                                <p class="card-text text-muted">Revisa los planes de tus profesores.</p>
+                                <a href="{% url 'planes_departamento' %}" class="btn btn-uho">Ver Planes</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Tarjetas del Profesor -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">📋 Mi Plan Anual</h5>
+                                <p class="card-text text-muted">Crea y gestiona tu plan de trabajo.</p>
+                                <a href="{% url 'mi_plan' %}" class="btn btn-uho">Ver Mi Plan</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">📅 Mi Agenda</h5>
+                                <p class="card-text text-muted">Registra tus horas y evidencias diarias.</p>
+                                <a href="{% url 'mi_agenda' %}" class="btn btn-uho">Ir a la Agenda</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- Si no está logueado -->
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">🔐 Iniciar Sesión</h5>
+                            <p class="card-text text-muted">Accede con tu cuenta institucional.</p>
+                            <a href="{% url 'login' %}" class="btn btn-uho">Entrar al Sistema</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h5 class="card-title">⚙️ Administración</h5>
-                        <p class="card-text text-muted">Configura campus, departamentos y usuarios.</p>
-                        <a href="/admin/" class="btn btn-outline-dark">Ir al Admin</a>
-                    </div>
-                </div>
-            </div>
+            {% endif %}
+            
         </div>
     </div>
 {% endblock %}

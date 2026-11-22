@@ -1,25 +1,64 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header text-white" style="background-color: #222e58;">
-                    <h4 class="mb-0">➕ Registrar Tarea Diaria</h4>
-                </div>
-                <div class="card-body p-4">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        {{ form.as_p }}
-                        
-                        <div class="mt-4 d-flex justify-content-between">
-                            <a href="{% url 'mi_agenda' %}" class="btn btn-outline-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-uho">Guardar Registro</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: #222e58;">📅 Mi Agenda Diaria</h2>
+        
+        <!-- EL BOTÓN SOLO SALE SI HAY PLANES APROBADOS -->
+        {% if planes_aprobados %}
+            <a href="{% url 'crear_registro' %}" class="btn btn-uho">+ Registrar Tarea de Hoy</a>
+        {% endif %}
+    </div>
+
+    {% if not planes_aprobados %}
+        <div class="alert alert-warning text-center shadow-sm">
+            <h5 class="alert-heading">No tienes planes aprobados</h5>
+            <p class="mb-0">Para registrar tareas en tu agenda, primero debes crear un Plan Anual y esperar a que tu Jefe lo apruebe.</p>
+            <a href="{% url 'lista_planes' %}" class="btn btn-outline-dark mt-3">Ir a mis planes</a>
+        </div>
+    {% else %}
+        <!-- SI HAY PLANES, MOSTRAMOS LA TABLA -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background-color: #222e58; color: white;">
+                        <tr>
+                            <th class="py-3 px-4">Fecha</th>
+                            <th class="py-3 px-4">Actividad / Tarea</th>
+                            <th class="py-3 px-4">Horas</th>
+                            <th class="py-3 px-4">Evidencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td class="px-4">{{ log.date|date:"d/m/Y" }}</td>
+                            <td class="px-4">
+                                {% if log.is_extraordinary %}
+                                    <span class="badge bg-danger">Extraordinaria</span> {{ log.description|truncatechars:40 }}
+                                {% else %}
+                                    {{ log.activity.name }}
+                                {% endif %}
+                            </td>
+                            <td class="px-4">{{ log.executed_hours }}h</td>
+                            <td class="px-4">
+                                {% if log.evidence %}
+                                    <a href="{{ log.evidence.url }}" target="_blank" class="btn btn-sm btn-outline-info">Ver Archivo</a>
+                                {% else %}
+                                    <span class="text-muted">Sin archivo</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-5">
+                                No has registrado ninguna tarea aún. ¡Empieza hoy!
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}

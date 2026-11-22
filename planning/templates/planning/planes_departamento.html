@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 class="fw-bold mb-4" style="color: #222e58;">📋 Planes de Mi Departamento</h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: #222e58; color: white;">
+                    <tr>
+                        <th class="py-3 px-4">Docente</th>
+                        <th class="py-3 px-4">Período</th>
+                        <th class="py-3 px-4">Estado</th>
+                        <th class="py-3 px-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plan in planes %}
+                    <tr>
+                        <td class="px-4 fw-semibold">{{ plan.teacher.user.username }}</td>
+                        <td class="px-4">{{ plan.period.name }}</td>
+                        <td class="px-4">
+                            {% if plan.status == 'draft' %}<span class="badge bg-secondary">Borrador</span>
+                            {% elif plan.status == 'pending' %}<span class="badge bg-info text-dark">Pendiente</span>
+                            {% elif plan.status == 'approved' %}<span class="badge bg-success">Aprobado</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4">
+                            <a href="{% url 'detalle_plan' plan.id %}" class="btn btn-sm btn-outline-dark">Revisar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-5">
+                            No hay planes registrados de otros profesores en tu departamento.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: #222e58;">📋 Mi Plan Anual</h2>
+        
+        {% if not plan %}
+            <a href="{% url 'crear_plan' %}" class="btn btn-uho">+ Crear Mi Plan Anual</a>
+        {% endif %}
+    </div>
+
+    {% if plan %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h4>Período: {{ plan.period.name }}</h4>
+                <p>Estado actual: 
+                    {% if plan.status == 'draft' %}
+                        <span class="badge bg-secondary">Borrador</span>
+                    {% elif plan.status == 'pending' %}
+                        <span class="badge bg-info text-dark">Pendiente</span>
+                    {% elif plan.status == 'approved' %}
+                        <span class="badge bg-success">Aprobado</span>
+                    {% endif %}
+                </p>
+                <a href="{% url 'detalle_plan' plan.id %}" class="btn btn-uho">Ver Detalle y Actividades</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info shadow-sm">
+            Aún no has creado tu plan anual para este período. ¡Haz clic en "+ Crear Mi Plan Anual"!
+        </div>
+    {% endif %}
+{% endblock %}

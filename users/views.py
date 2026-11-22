@@ -19,20 +19,13 @@ def registro(request):
 
     return render(request, 'users/registro.html', {'form': form})
 
-def redireccion_login(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
+from django.shortcuts import redirect
+from django.contrib import messages
 
-    if request.user.is_superuser or request.user.is_staff:
-        return redirect('/admin/')
-    
-    if hasattr(request.user, 'teacherprofile'):
-        perfil = request.user.teacherprofile
-        if perfil.role == 'head':
-            return redirect('bandeja_jefe') 
-        elif perfil.role == 'teacher':
-            return redirect('lista_planes')
-    
+from django.shortcuts import redirect
+
+def redireccion_login(request):
+    # Después de loguearse, todos van a la página de inicio (Home)
     return redirect('home')
 
 @login_required
